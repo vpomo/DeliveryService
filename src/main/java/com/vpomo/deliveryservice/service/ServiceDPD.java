@@ -1,23 +1,26 @@
-package com.vpomo.deliveryservice;
+package com.vpomo.deliveryservice.service;
 
-/**
- * Created by Zver on 31.10.2016.
- */
-
+import com.vpomo.deliveryservice.model.CostDPD;
+import javax.validation.constraints.AssertFalse;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.soap.*;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
+import java.io.*;
+import java.util.Iterator;
+import java.util.List;
 
+/**
+ * @author Pomogalov V.A.
+ */
 
 public class ServiceDPD {
-
-    public static void main(String args[]) throws Exception {
-        //getCitiesCashPay();
-        getServiceCostByParcels2();
-    }
+    private static final String CLIENT_NUMBER = "1111000228";
+    private static final String CLIENT_KEY = "64A3AAEE65FD662728338550BA9FCC7B84DE8767";
 
     public static void getCitiesCashPay() throws Exception {
         try {
@@ -25,11 +28,11 @@ public class ServiceDPD {
             SOAPConnection connection = soapConnFactory.createConnection();
             String url = "http://ws.dpd.ru/services/geography2?wsdl";
 
-            //Создаем сообщение
+            //Create a message
             MessageFactory messageFactory = MessageFactory.newInstance("SOAP 1.1 Protocol");
             SOAPMessage message = messageFactory.createMessage();
 
-            //Создаем объекты, представляющие различные компоненты сообщения
+            //Create objects that represent the various components of posts
             SOAPPart soapPart = message.getSOAPPart();
             SOAPEnvelope envelope = soapPart.getEnvelope();
             SOAPBody body = envelope.getBody();
@@ -48,17 +51,17 @@ public class ServiceDPD {
 
             //SOAPElement countryCode = ticketRequest.addChildElement("countryCode");
 
-            // Заполняем значения
+            // Fill values
             SOAPFactory sf = SOAPFactory.newInstance();
 
-            clientNumber.addTextNode("1111000228");
-            clientKey.addTextNode("64A3AAEE65FD662728338550BA9FCC7B84DE8767");
+            clientNumber.addTextNode(CLIENT_NUMBER);
+            clientKey.addTextNode(CLIENT_KEY);
             //countryCode.addTextNode("RU");
 
-            //Сохранение сообщения
+            //Saving messages
             message.saveChanges();
 
-            //Отправляем запрос и выводим ответ на экран
+            //Send the request and response to the output screen
             SOAPMessage soapResponse = connection.call(message, url);
             Source sourceContent = soapResponse.getSOAPPart().getContent();
             Transformer t = TransformerFactory.newInstance().newTransformer();
@@ -67,7 +70,7 @@ public class ServiceDPD {
             StreamResult result = new StreamResult(System.out);
             t.transform(sourceContent, result);
 
-            //Закрываем соединение
+
             connection.close();
 
         } catch (Exception e) {
@@ -81,11 +84,11 @@ public class ServiceDPD {
             SOAPConnection connection = soapConnFactory.createConnection();
             String url = "http://ws.dpd.ru/services/calculator2?wsdl";
 
-            //Создаем сообщение
+            //Create a message
             MessageFactory messageFactory = MessageFactory.newInstance("SOAP 1.1 Protocol");
             SOAPMessage message = messageFactory.createMessage();
 
-            //Создаем объекты, представляющие различные компоненты сообщения
+            //Create objects that represent the various components of posts
             SOAPPart soapPart = message.getSOAPPart();
             SOAPEnvelope envelope = soapPart.getEnvelope();
             SOAPBody body = envelope.getBody();
@@ -122,11 +125,11 @@ public class ServiceDPD {
             SOAPElement height = parcel.addChildElement("height");
             SOAPElement quantity = parcel.addChildElement("quantity");
 
-            // Заполняем значения
+            // Fill values
             SOAPFactory sf = SOAPFactory.newInstance();
 
-            clientNumber.addTextNode("1111000228");
-            clientKey.addTextNode("64A3AAEE65FD662728338550BA9FCC7B84DE8767");
+            clientNumber.addTextNode(CLIENT_NUMBER);
+            clientKey.addTextNode(CLIENT_KEY);
 
             cityIdPickup.addTextNode("195880525");
             cityIdDelivery.addTextNode("49265227");
@@ -146,24 +149,39 @@ public class ServiceDPD {
             quantity.addTextNode("1");
 
 
-            //Сохранение сообщения
+            //Saving messages
             message.saveChanges();
 
-            //Отправляем запрос и выводим ответ на экран
+            //Send the request and response to the output screen
             SOAPMessage soapResponse = connection.call(message, url);
             Source sourceContent = soapResponse.getSOAPPart().getContent();
             Transformer t = TransformerFactory.newInstance().newTransformer();
             t.setOutputProperty(OutputKeys.METHOD, "xml");
             t.setOutputProperty(OutputKeys.INDENT, "yes");
-            StreamResult result = new StreamResult(System.out);
+
+            ByteArrayOutputStream streamOut = new ByteArrayOutputStream();
+            StreamResult result = new StreamResult(streamOut);
+
             t.transform(sourceContent, result);
 
-            //Закрываем соединение
+            System.out.println("Displays the server's response in XML format:");
+            System.out.println(streamOut.toString());
+
+            ReadCostDPD readCostDPD = new ReadCostDPD();
+            List<CostDPD> returnListCost = readCostDPD.readFromXML(sourceContent);
+
+            System.out.println("Displays the Java-objects:");
+            Iterator<CostDPD> costIterator = returnListCost.iterator();
+            while (costIterator.hasNext()) {
+                System.out.println(costIterator.next());
+            }
+
             connection.close();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
     }
 
 }

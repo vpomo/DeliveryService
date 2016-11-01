@@ -1,4 +1,4 @@
-package com.vpomo.deliveryservice;
+package com.vpomo.deliveryservice.service;
 
 /**
  * Created by Zver on 30.10.2016.
@@ -12,19 +12,23 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
 /**
-*    Данный код создает запросы getTicket.Метод getTicket используется
-*    для получения билета на подготовку информации по списку идентификаторов
-*    отправлений. В запросе передается список идентификаторов отправлений.
-*    При успешном вызове метод возвращает идентификатор билета.
-*    Идентификатор билета нужен для метода getResponseByTicket.
-*    В запросе метода указываются до 3000 идентификаторов отправлений и
-*    параметры доступа к API Сервиса отслеживания (логин и пароль).
-*    Ответ выводится на экран в формате xml.
+ * @author Pomogalov V.A.
+ */
+
+/**
+ * Данный код создает запросы getTicket.Метод getTicket используется
+ * для получения билета на подготовку информации по списку идентификаторов
+ * отправлений. В запросе передается список идентификаторов отправлений.
+ * При успешном вызове метод возвращает идентификатор билета.
+ * Идентификатор билета нужен для метода getResponseByTicket.
+ * В запросе метода указываются до 3000 идентификаторов отправлений и
+ * параметры доступа к API Сервиса отслеживания (логин и пароль).
+ * Ответ выводится на экран в формате xml.
  */
 
 
 public class RussianPost {
-    public static void main(String args[]) throws Exception {
+    public void getTicket() throws Exception {
         /*
         Пример запроса
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -55,16 +59,16 @@ public class RussianPost {
         </S:Envelope>
         */
 
-        //Создаем соединение
+        //Create a connection
         SOAPConnectionFactory soapConnFactory = SOAPConnectionFactory.newInstance();
         SOAPConnection connection = soapConnFactory.createConnection();
         String url = "https://tracking.russianpost.ru/fc";
 
-        //Создаем сообщение
+        //Create a message
         MessageFactory messageFactory = MessageFactory.newInstance("SOAP 1.1 Protocol");
         SOAPMessage message = messageFactory.createMessage();
 
-        //Создаем объекты, представляющие различные компоненты сообщения
+        //Create objects that represent the various components of posts
         SOAPPart soapPart = message.getSOAPPart();
         SOAPEnvelope envelope = soapPart.getEnvelope();
         SOAPBody body = envelope.getBody();
@@ -81,7 +85,7 @@ public class RussianPost {
         SOAPElement password = ticketRequest.addChildElement("password");
         SOAPElement language = ticketRequest.addChildElement("language");
 
-        // Заполняем значения
+        // Fill values
         SOAPFactory sf = SOAPFactory.newInstance();
         Name barcode = sf.createName("Barcode");
         item1.addAttribute(barcode, "RA123456788RU");
@@ -91,10 +95,10 @@ public class RussianPost {
         password.addTextNode("myPassword");
         language.addTextNode("RUS");
 
-        //Сохранение сообщения
+        //Saving messages
         message.saveChanges();
 
-        //Отправляем запрос и выводим ответ на экран
+        //Send the request and response to the output screen
         SOAPMessage soapResponse = connection.call(message, url);
         Source sourceContent = soapResponse.getSOAPPart().getContent();
         Transformer t = TransformerFactory.newInstance().newTransformer();
@@ -103,7 +107,7 @@ public class RussianPost {
         StreamResult result = new StreamResult(System.out);
         t.transform(sourceContent, result);
 
-        //Закрываем соединение
+        //Close connection
         connection.close();
     }
 
