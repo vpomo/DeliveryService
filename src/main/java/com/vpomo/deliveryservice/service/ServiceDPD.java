@@ -1,10 +1,7 @@
 package com.vpomo.deliveryservice.service;
 
 import com.vpomo.deliveryservice.model.CostDPD;
-import javax.validation.constraints.AssertFalse;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.soap.*;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -168,7 +165,7 @@ public class ServiceDPD {
             System.out.println(streamOut.toString());
 
             ReadCostDPD readCostDPD = new ReadCostDPD();
-            List<CostDPD> returnListCost = readCostDPD.readFromXML(sourceContent);
+            List<CostDPD> returnListCost = readCostDPD.readFromXMLCostDPD(sourceContent);
 
             System.out.println("Displays the Java-objects:");
             Iterator<CostDPD> costIterator = returnListCost.iterator();

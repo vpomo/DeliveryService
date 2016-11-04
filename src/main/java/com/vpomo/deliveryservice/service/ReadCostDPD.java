@@ -20,7 +20,7 @@ import javax.xml.transform.stream.StreamResult;
 public class ReadCostDPD {
 
 
-    public List<CostDPD> readFromXML(Source is) throws XMLStreamException {
+    public List<CostDPD> readFromXMLCostDPD(Source is) throws XMLStreamException {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         XMLStreamReader reader = null;
         try {
