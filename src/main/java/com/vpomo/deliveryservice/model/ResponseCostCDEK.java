@@ -8,6 +8,10 @@ public class ResponseCostCDEK {
 
     private CostCDEK result;
 
+    public ResponseCostCDEK() {
+        this.result = new CostCDEK();
+    }
+
     public CostCDEK getResult() {
         return result;
     }

@@ -14,41 +14,47 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonIgnoreProperties({"result"})
 public class CostCDEK {
     @JsonProperty("price")
-    private int price;
+    private double price;
     @JsonProperty("deliveryPeriodMin")
     private int deliveryPeriodMin;
+    @JsonProperty("deliveryPeriodMax")
     private int deliveryPeriodMax;
+    @JsonProperty("deliveryDateMin")
     private String deliveryDateMin;
+    @JsonProperty("deliveryDateMax")
     private String deliveryDateMax;
+    @JsonProperty("tariffId")
     private int tariffId;
+    @JsonProperty("cashOnDelivery")
+    private float cashOnDelivery;
+    @JsonProperty("priceByCurrency")
     private float priceByCurrency;
+    @JsonProperty("currency")
     private String currency;
 
-    @JsonProperty("result")
-    private String result;
-
+    private String textError;
 
     public CostCDEK() {
-
     }
 
     public CostCDEK(int price, int deliveryPeriodMin, int deliveryPeriodMax, String deliveryDateMin,
-                    String deliveryDateMax, int tariffId, float priceByCurrency, String currency) {
+                    String deliveryDateMax, int tariffId, float cashOnDelivery, float priceByCurrency, String currency) {
         this.price = price;
         this.deliveryPeriodMin = deliveryPeriodMin;
         this.deliveryPeriodMax = deliveryPeriodMax;
         this.deliveryDateMin = deliveryDateMin;
         this.deliveryDateMax = deliveryDateMax;
         this.tariffId = tariffId;
+        this.cashOnDelivery = cashOnDelivery;
         this.priceByCurrency = priceByCurrency;
         this.currency = currency;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -92,6 +98,14 @@ public class CostCDEK {
         this.tariffId = tariffId;
     }
 
+    public float getCashOnDelivery() {
+        return cashOnDelivery;
+    }
+
+    public void setCashOnDelivery(float cashOnDelivery) {
+        this.cashOnDelivery = cashOnDelivery;
+    }
+
     public float getPriceByCurrency() {
         return priceByCurrency;
     }
@@ -108,20 +122,20 @@ public class CostCDEK {
         this.currency = currency;
     }
 
-    public String getResult() {
-        return result;
+    public String getTextError() {
+        return textError;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setTextError(String textError) {
+        this.textError = textError;
     }
 
     @Override
     public String toString() {
-        return "CostCDEK{" +
-                "price=" + price + ", deliveryPeriodMin=" + deliveryPeriodMin + ", deliveryPeriodMax=" + deliveryPeriodMax +
+        return "{" + "error:" + textError +
+                ", price=" + price + ", deliveryPeriodMin=" + deliveryPeriodMin + ", deliveryPeriodMax=" + deliveryPeriodMax +
                 ", deliveryDateMin=" + deliveryDateMin + ", deliveryDateMax=" + deliveryDateMax + ", tariffId=" + tariffId +
-                ", priceByCurrency=" + priceByCurrency + ", currency=" + currency +
+                ", cashOnDelivery=" + cashOnDelivery + ", priceByCurrency=" + priceByCurrency + ", currency=" + currency +
                 "}";
     }
 }
