@@ -3,6 +3,7 @@ package com.vpomo.deliveryservice.view;
 import com.vpomo.deliveryservice.model.GoodsShipment;
 import com.vpomo.deliveryservice.model.ResponseCostCDEK;
 import com.vpomo.deliveryservice.service.ServiceCDEK;
+import com.vpomo.deliveryservice.service.ServiceCalcCDEK;
 
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ public class MainDelivery {
         String senderCityId = "286";
         String receiverCityId = "94";
 
-        ServiceCDEK serviceCDEK = new ServiceCDEK();
+        ServiceCalcCDEK serviceCalcCDEK = new ServiceCalcCDEK();
         ArrayList<GoodsShipment> listGoodsShipment = new ArrayList<>();
 
         //GoodsShipment (double weight, int length, int width, int height, double volume)
@@ -30,8 +31,8 @@ public class MainDelivery {
         GoodsShipment goodsShipment3 = new GoodsShipment(0.3, 10, 7, 5, 0.0);
         listGoodsShipment.add(goodsShipment3);
 
-        if (ServiceCDEK.checkDataGoods(listGoodsShipment)) {
-            ResponseCostCDEK calculateDelivery = ServiceCDEK.calculateDelivery(dateExecute, senderCityId, receiverCityId, listGoodsShipment);
+        if (ServiceCalcCDEK.checkDataGoods(listGoodsShipment)) {
+            ResponseCostCDEK calculateDelivery = ServiceCalcCDEK.calculateDelivery(dateExecute, senderCityId, receiverCityId, listGoodsShipment);
             System.out.println("\n" + "Query result:");
             if (calculateDelivery.getResult().getTextError() != null) {
                 System.out.println("Error accessing API: " + calculateDelivery.getResult().getTextError());
@@ -41,7 +42,7 @@ public class MainDelivery {
                 System.out.println("cashOnDelivery=" + calculateDelivery.getResult().getCashOnDelivery());
             }
         } else {
-            System.out.println("Fail :(((((((((((((((");
+            System.out.println("Goods parameters entered incorrectly");
         }
 
     }

@@ -21,7 +21,7 @@ import org.apache.http.entity.StringEntity;
  * @author Pomogalov V.A.
  */
 
-public class ServiceCDEK {
+public class ServiceCalcCDEK {
     private static final String USER_AGENT = "Mozilla/5.0";
     private static final String CDEK_ACCOUNT = "ec1ac09f1e819651dbb400ca7963313d";
     private static final String CDEK_SECURE_PASSWORD = "dc6991a53e056302ec39c0a7fdfd00ec";
@@ -77,7 +77,7 @@ public class ServiceCDEK {
 
                     Iterator<ErrorCostCDEK> errorIterator = responseErrorCostCDEK.getError().iterator();
                     while (errorIterator.hasNext()) {
-                        textError = textError + errorIterator.next().getText() + " ";
+                        textError = textError + errorIterator.next().getText() + "\n";
                     }
                     responseCostCDEK.getResult().setTextError(textError);
                 }
