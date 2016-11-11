@@ -40,7 +40,7 @@ public class ReadCostDPD {
                 case XMLStreamReader.START_ELEMENT:
                     String elementName = reader.getLocalName();
                     if (elementName.equals("getServiceCostByParcels2Response"))
-                        return readBooks(reader);
+                        return readAll(reader);
                     break;
                 case XMLStreamReader.END_ELEMENT:
                     break;
@@ -49,7 +49,7 @@ public class ReadCostDPD {
         throw new XMLStreamException("Premature end");
     }
 
-    private List<CostDPD> readBooks(XMLStreamReader reader) throws XMLStreamException {
+    private List<CostDPD> readAll(XMLStreamReader reader) throws XMLStreamException {
         List<CostDPD> costDPDs = new ArrayList<>();
 
         while (reader.hasNext()) {

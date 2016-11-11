@@ -11,6 +11,10 @@ public class GoodsShipment {
     private int width;
     private int height;
     private double volume;
+    private double priceSite;
+    private String articul;
+    private double payment;
+    private double cost;
 
     public GoodsShipment (double weight, int length, int width, int height, double volume){
         this.weight = weight;
@@ -58,6 +62,38 @@ public class GoodsShipment {
 
     public void setVolume(double volume) {
         this.volume = volume;
+    }
+
+    public double getPriceSite() {
+        return priceSite;
+    }
+
+    public void setPriceSite(double priceSite) {
+        this.priceSite = priceSite;
+    }
+
+    public String getArticul() {
+        return articul;
+    }
+
+    public void setArticul(String articul) {
+        this.articul = articul;
+    }
+
+    public double getPayment() {
+        return payment;
+    }
+
+    public void setPayment(double payment) {
+        this.payment = payment;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 
     @Override
