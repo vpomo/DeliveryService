@@ -112,7 +112,7 @@ public class MainDelivery {
 
         );
 
-
+/*
         ResponseAddOrderCDEK addOrderCDEK;
         System.out.println("Make new order ...");
         resultRequest = serviceOrderCDEK.newOrder("U-FUN-20161112-005", orderCDEK);
@@ -129,7 +129,7 @@ public class MainDelivery {
                     "\n" + addOrderCDEK.getMessageFromService() +"\n\n");
         }
 
-
+*/
 
         //View status all order's in period
         System.out.println("\n\n View status all order's in period: from 2010-07-16 to 2016-12-19 \n\n");
@@ -145,23 +145,37 @@ public class MainDelivery {
 
 
 
- /*
-        System.out.println("\n\n Delete order");
-        resultRequest = serviceOrderCDEK.deleteOrder("u-fun-2016-11-09-002", "1034225201");
-        System.out.println(resultRequest);
- */
-
 /*
-        System.out.println("\n\n Status by order");
-        //resultRequest = serviceOrderCDEK.statusOrderByNumberCDEK("1034222318");
-        //resultRequest = serviceOrderCDEK.statusOrderByNumberDate("u-fun-2016-11-09-001", "2016-11-09");
+        System.out.println("\n\n Delete order");
+        resultRequest = serviceOrderCDEK.deleteOrder("U-FUN-20161112-002", "1034422480");
         System.out.println(resultRequest);
+        ResponseDeleteOrderCDEK delOrderCDEK;
+        delOrderCDEK = parseAnswerCDEK.readFromXMLDeleteOrderCDEK(resultRequest);
+        if (delOrderCDEK.getErrorCode() != null) {
+            System.out.println("Ошибка при удалении заказа: " + delOrderCDEK.getErrorCode() + "\n\n");
+        } else {
+            System.out.println("Успешная операция с базой СДЭК. " + delOrderCDEK.getMessageFromService() + "\n\n");
+        }
 */
+
+///*
+        System.out.println("\n\n Status by order");
+        resultRequest = serviceOrderCDEK.statusOrderByNumberCDEK("1034422688");
+        //resultRequest = serviceOrderCDEK.statusOrderByNumberDate("u-fun-2016-11-09-001", "2016-11-09");
+        ResponseStatusOrderCDEK statusOrderCDEK = new ResponseStatusOrderCDEK();
+        statusOrderCDEK = parseAnswerCDEK.readFromXMLStatusOrderCDEK(resultRequest);
+        if (statusOrderCDEK.getDispatchNumber() != null ){
+            System.out.println(statusOrderCDEK.toString());
+        } else {
+            System.out.println("Такого заказа в базе СДЭК не существует");
+        }
+
+
+//*/
 /*
         //Print order
         System.out.println("\n\n Print order ...");
-        serviceOrderCDEK.printOrder("1034279504");
-        System.out.println(resultRequest);
+        serviceOrderCDEK.printOrder("1034422688");
 */
 
     }

@@ -108,7 +108,7 @@ public class ServiceOrderCDEK {
         XML.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<DeliveryRequest account=\"" + CDEK_ACCOUNT + "\" date=\"" + dateExecute + "\" number=\"" + numberAkt + "\" orderCount=\"1\" secure=\"" + secureString + "\">\n" +
                 "  <Order " +
-                " 1Number=\"" + numberAkt + "\"" +
+                " Number=\"" + numberAkt + "\"" +
                 " SendCityCode=\"" + orderCDEK.getSendCityCode() + "\"" +
                 " RecCityCode=\"" + orderCDEK.getRecCityCode() + "\"" +
                 " RecipientName=\"" + orderCDEK.getRecipientName() + "\"" +
@@ -180,7 +180,7 @@ public class ServiceOrderCDEK {
                 "<DeleteRequest account=\"" + CDEK_ACCOUNT + "\" date=\"" + dateExecute + "\" number=\"" + numberCDEK + "\" orderCount=\"1\" secure=\"" + secureString + "\">\n" +
                 "   <Order Number=\"" + numberAkt + "\"/>\n" +
                 "</DeleteRequest>\n");
-        System.out.println(XML.toString());
+        //System.out.println(XML.toString());
         return XML.toString();
     }
 
@@ -193,7 +193,7 @@ public class ServiceOrderCDEK {
                 "<StatusReport account=\"" + CDEK_ACCOUNT + "\" date=\"" + dateExecute + "\" showHistory=\"1\" showReturnOrder=\"1\" secure=\"" + secureString + "\">\n" +
                 "   <Order DispatchNumber=\"" + numberCDEK + "\"/>\n" +
                 "</StatusReport>\n");
-        System.out.println(XML.toString());
+        //System.out.println(XML.toString());
         return XML.toString();
     }
 
