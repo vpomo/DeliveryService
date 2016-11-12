@@ -4,12 +4,16 @@ package com.vpomo.deliveryservice.model;
  * @author Pomogalov V.A.
  */
 
-public class AddedServiceOrderCDEK {
+public class AddedServiceInOrderCDEK {
     private int code;
     private double summa;
 
-    public AddedServiceOrderCDEK() {
+    public AddedServiceInOrderCDEK() {
+    }
 
+    public AddedServiceInOrderCDEK(int code, double summa) {
+        this.code = code;
+        this.summa = summa;
     }
 
     public int getCode() {
@@ -29,6 +33,6 @@ public class AddedServiceOrderCDEK {
     }
 
     public String toString() {
-        return "AddedServiceCDEK{" + "code=" + code + ", sum=" + summa + "}";
+        return "{code=" + code + ", sum=" + summa + "}";
     }
 }

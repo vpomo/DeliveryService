@@ -21,16 +21,6 @@ public class ServiceOrderCDEK {
     private static final String CDEK_ACCOUNT = "ec1ac09f1e819651dbb400ca7963313d";
     private static final String CDEK_SECURE_PASSWORD = "dc6991a53e056302ec39c0a7fdfd00ec";
 
-    public String testRequestAllOrderInPeriod(String dateBegin, String dateEnd) {
-        String result = "error";
-        try {
-            result = testPostRequest("http://int.cdek.ru/info_report.php", viewStatusAllOrderInPeriod(dateBegin, dateEnd));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
     public String newOrder(String numberAkt, OrderCDEK orderCDEK) {
         String result = "error";
         try {
@@ -86,7 +76,7 @@ public class ServiceOrderCDEK {
         String result = "error";
         BufferedReader reader;
         try {
-            printRequest("http://int.cdek.ru/orders_print.php", printOrderXML(numberCDEK));
+            getPDFRequest("http://int.cdek.ru/orders_print.php", printOrderXML(numberCDEK));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -118,7 +108,7 @@ public class ServiceOrderCDEK {
         XML.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<DeliveryRequest account=\"" + CDEK_ACCOUNT + "\" date=\"" + dateExecute + "\" number=\"" + numberAkt + "\" orderCount=\"1\" secure=\"" + secureString + "\">\n" +
                 "  <Order " +
-                " Number=\"" + orderCDEK.getNumberClientOrder() + "\"" +
+                " 1Number=\"" + numberAkt + "\"" +
                 " SendCityCode=\"" + orderCDEK.getSendCityCode() + "\"" +
                 " RecCityCode=\"" + orderCDEK.getRecCityCode() + "\"" +
                 " RecipientName=\"" + orderCDEK.getRecipientName() + "\"" +
@@ -159,15 +149,13 @@ public class ServiceOrderCDEK {
                 "    </Package>\n" +
                 "  </Order>\n" +
                 "</DeliveryRequest>\n");
-        System.out.println(XML.toString());
+        //System.out.println(XML.toString());
         String returnXML = "";
         try {
             returnXML = URLEncoder.encode(XML.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
-        System.out.println(returnXML);
         return returnXML;
     }
 
@@ -269,7 +257,7 @@ public class ServiceOrderCDEK {
         return resultResponse.toString();
     }
 
-    public void printRequest(String address, String XML) throws MalformedURLException, IOException {
+    public void getPDFRequest(String address, String XML) throws MalformedURLException, IOException {
         String urlParameters = "xml_request=" + XML;
         URL url = new URL(address);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -312,39 +300,4 @@ public class ServiceOrderCDEK {
         reader.close();
         //return reader;
     }
-
-    public String testPostRequest(String address, String XML) throws MalformedURLException, IOException {
-        String urlParameters = "xml_request=" + XML;
-        URL url = new URL(address);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setDoOutput(true);
-        connection.setDoInput(true);
-        connection.setInstanceFollowRedirects(false);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        connection.setRequestProperty("charset", "utf-8");
-        connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParameters.getBytes().length));
-        connection.setUseCaches(false);
-
-        DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-        wr.writeBytes(urlParameters);
-        wr.flush();
-        wr.close();
-        connection.disconnect();
-
-        OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-        writer.write(urlParameters);
-        writer.flush();
-        String line;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuffer resultResponse = new StringBuffer();
-
-        while ((line = reader.readLine()) != null) {
-            resultResponse.append(line);
-        }
-        writer.close();
-        reader.close();
-        return resultResponse.toString();
-    }
-
 }

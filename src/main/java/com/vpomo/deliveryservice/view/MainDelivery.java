@@ -1,8 +1,6 @@
 package com.vpomo.deliveryservice.view;
 
-import com.vpomo.deliveryservice.model.GoodsShipment;
-import com.vpomo.deliveryservice.model.OrderCDEK;
-import com.vpomo.deliveryservice.model.ResponseCostCDEK;
+import com.vpomo.deliveryservice.model.*;
 import com.vpomo.deliveryservice.service.*;
 import com.vpomo.deliveryservice.service.ServiceCalcCDEK;
 
@@ -115,24 +113,36 @@ public class MainDelivery {
         );
 
 
-
-/*
+        ResponseAddOrderCDEK addOrderCDEK;
         System.out.println("Make new order ...");
-        resultRequest = serviceOrderCDEK.newOrder("U-FUN-20161111-002", orderCDEK);
-        System.out.println(resultRequest);
-*/
+        resultRequest = serviceOrderCDEK.newOrder("U-FUN-20161112-005", orderCDEK);
+        System.out.println("resultRequest=" + resultRequest);
 
-//1034222318
+
+        addOrderCDEK = parseAnswerCDEK.readFromXMLAddOrderCDEK(resultRequest);
+        if (addOrderCDEK.getErrorCode() == null) {
+            System.out.println("Успешно создан новый заказ.\n" +
+                    "Номер заказа Интернет-магазина: " + addOrderCDEK.getNumberOrder() +
+                    ", Номер заказа в системе СДЭК: " + addOrderCDEK.getDispatchNumberOrder());
+        } else {
+            System.out.println("Ошибка при создании нового заказа: " + addOrderCDEK.getErrorCode() +
+                    "\n" + addOrderCDEK.getMessageFromService() +"\n\n");
+        }
+
 
 
         //View status all order's in period
         System.out.println("\n\n View status all order's in period: from 2010-07-16 to 2016-12-19 \n\n");
-  //      resultRequest = serviceOrderCDEK.requestAllOrderInPeriod("2016-01-01", "2016-12-19");
-        String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><InfoReport><Order Number=\"u-fun-2016-11-10-004\" Date=\"2016-11-11\" DispatchNumber=\"1034332635\" TariffTypeCode=\"137\" Weight=\"2.574\" DeliverySum=\"655\" DateLastChange=\"2016-01-01 00:00:00\" CashOnDeliv=\"3080.00\"  deliveryMode=\"3\" deliveryVariant=\"COURIER\"><SendCity Code=\"286\" PostCode=\"675000\" Name=\"Благовещенск\"/><RecCity Code=\"414\" PostCode=\"603000\" Name=\"Нижний Новгород\"/><AddedService ServiceCode=\"30\" Sum=\"0\" /><AddedService ServiceCode=\"2\" Sum=\"300\" /></Order><Order Number=\"u-fun-2016-11-11-001\" Date=\"2016-11-11\" DispatchNumber=\"1034332711\" TariffTypeCode=\"137\" Weight=\"2.574\" DeliverySum=\"655\" DateLastChange=\"2016-01-01 00:00:00\" CashOnDeliv=\"3080.00\"  deliveryMode=\"3\" deliveryVariant=\"COURIER\"><SendCity Code=\"286\" PostCode=\"675000\" Name=\"Благовещенск\"/><RecCity Code=\"414\" PostCode=\"603000\" Name=\"Нижний Новгород\"/><AddedService ServiceCode=\"30\" Sum=\"0\" /><AddedService ServiceCode=\"2\" Sum=\"300\" /></Order></InfoReport>\n";
-//        readOrderCDEK.viewStatusAllOrder(serviceOrderCDEK.testRequestAllOrderInPeriod("2016-01-01", "2016-12-19"));
-        //readOrderCDEK.viewStatusAllOrder(testXml);
-        parseAnswerCDEK.readFromXMLAllOrderCDEK(testXml);
-        System.out.println(resultRequest);
+        resultRequest = serviceOrderCDEK.requestAllOrderInPeriod("2016-01-01", "2016-12-19");
+        ArrayList<ResponseAllOrderCDEK> allOrderCDEK;
+
+        allOrderCDEK = parseAnswerCDEK.readFromXMLAllOrderCDEK(resultRequest);
+        if (allOrderCDEK != null) {
+            System.out.println(allOrderCDEK.toString());
+        } else {
+            System.out.println("Нет ни одного заказа\n\n");
+        }
+
 
 
  /*
