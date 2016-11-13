@@ -11,6 +11,8 @@ import java.io.*;
 import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import static com.vpomo.deliveryservice.model.SettingsService.CDEK_ACCOUNT;
+import static com.vpomo.deliveryservice.model.SettingsService.CDEK_SECURE_PASSWORD;
 
 /**
  * @author Pomogalov V.A.
@@ -18,8 +20,6 @@ import java.util.Date;
 
 
 public class ServiceOrderCDEK {
-    private static final String CDEK_ACCOUNT = "ec1ac09f1e819651dbb400ca7963313d";
-    private static final String CDEK_SECURE_PASSWORD = "dc6991a53e056302ec39c0a7fdfd00ec";
 
     public String newOrder(String numberAkt, OrderCDEK orderCDEK) {
         String result = "error";
