@@ -1,7 +1,10 @@
 package com.vpomo.deliveryservice.model;
 
 /**
- * Created by Zver on 04.11.2016.
+ * @author Pomogalov V.A.
+ *
+ * Вспомогательный объект для чтения ответа от сервера СДЭК
+ * при расчете стоимости доставки товара
  */
 
 public class ResponseCostCDEK {

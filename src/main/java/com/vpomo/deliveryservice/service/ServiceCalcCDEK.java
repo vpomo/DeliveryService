@@ -22,15 +22,34 @@ import static com.vpomo.deliveryservice.model.SettingsService.CDEK_SECURE_PASSWO
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Класс для отправки запроса на сервер СДЭК для расчета стоимости доставки посылки
+ * и для парсинга ответов от сервера СДЭК в формате JSON-пакетов
+ *
+ * Используется пакет com.fasterxml.jackson.databind для парсинга ответа от сервера
+ * Используется пакет org.apache.http для отправки запроса на сервер
  */
 
 public class ServiceCalcCDEK {
     private static final String USER_AGENT = "Mozilla/5.0";
 
+    /**
+     * Метод для отправки запроса на сервер для расчета стоимости доставки посылки
+     * и приема от него ответа
+     *
+     * @param dateExecute
+     * @param senderCityId
+     * @param receiverCityId
+     * @param listGoods
+     * @return ResponseCostCDEK
+     * @throws IOException
+     */
     public static ResponseCostCDEK calculateDelivery(String dateExecute, String senderCityId, String receiverCityId,
                                             List<GoodsShipment> listGoods) throws IOException {
         String url = "http://api.edostavka.ru/calculator/calculate_price_by_json.php";
         ResponseCostCDEK responseCostCDEK = new ResponseCostCDEK();
+
+        // Формируем JSON-объект
         String requestJSON = makeRequestCalcJSON(dateExecute, senderCityId, receiverCityId, listGoods);
         String textError = "";
 
@@ -66,8 +85,6 @@ public class ServiceCalcCDEK {
 
             while ((output = br.readLine()) != null) {
                 resultResponse.append(output);
-                //System.out.println("result = ");
-                //System.out.println(resultResponse.toString());
 
                 try {
                     ObjectMapper mapperCostCDEK = new ObjectMapper();
@@ -91,6 +108,15 @@ public class ServiceCalcCDEK {
         return responseCostCDEK;
     }
 
+    /**
+     * Вспомогательный метод для формирования запроса в виде JSON-объекта
+     *
+     * @param dateExecute
+     * @param senderCityId
+     * @param receiverCityId
+     * @param listGoods
+     * @return String
+     */
     private static String makeRequestCalcJSON(String dateExecute, String senderCityId, String receiverCityId, List<GoodsShipment> listGoods) {
         String secureString = DigestUtils.md5Hex(dateExecute + "&" + CDEK_SECURE_PASSWORD);
         String makeReguestJSON = "{" +
@@ -103,6 +129,7 @@ public class ServiceCalcCDEK {
                 "\"receiverCityId\":\"" + receiverCityId + "\"," +
                 "\"tariffId\":\"137\"," +
 
+                //Содержимое посылки переводим в JSON-объект
                 goodsToJSON(listGoods) +
 
                 "}";
@@ -110,6 +137,12 @@ public class ServiceCalcCDEK {
         return makeReguestJSON;
     }
 
+    /**
+     * Метод для проверки корректности введенных габаритов посылки
+     *
+     * @param listGoods
+     * @return Boolean
+     */
     public static Boolean checkDataGoods(List<GoodsShipment> listGoods) {
         Boolean sucess = true;
         int numberGoods = listGoods.size();
@@ -130,6 +163,12 @@ public class ServiceCalcCDEK {
         return sucess;
     }
 
+    /**
+     * Метод формирует спимок товаров в виде JSON-объекта
+     *
+     * @param listGoods
+     * @return String
+     */
     public static String goodsToJSON(List<GoodsShipment> listGoods) {
         String result = "\"goods\":" + "[";
         int numberGoods = listGoods.size();

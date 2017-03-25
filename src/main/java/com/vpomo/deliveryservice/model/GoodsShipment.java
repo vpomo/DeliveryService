@@ -2,6 +2,8 @@ package com.vpomo.deliveryservice.model;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Вспомогательный объект для описания содержимого посылки
  */
 
 

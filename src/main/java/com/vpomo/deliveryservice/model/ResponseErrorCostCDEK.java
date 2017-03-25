@@ -4,6 +4,9 @@ import java.util.List;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Вспомогательный объект для чтения сообщения об ошибке от сервера СДЭК
+ * при запросе на расчет стоимости доставки товара
  */
 
 public class ResponseErrorCostCDEK {

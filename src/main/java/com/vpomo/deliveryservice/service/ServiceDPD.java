@@ -13,12 +13,18 @@ import java.util.List;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Работа с транспортной компанией ДПД
  */
 
 public class ServiceDPD {
     private static final String CLIENT_NUMBER = "1111000228";
     private static final String CLIENT_KEY = "64A3AAEE65FD662728338550BA9FCC7B84DE8767";
 
+    /**
+     *
+     * @throws Exception
+     */
     public static void getCitiesCashPay() throws Exception {
         try {
             SOAPConnectionFactory soapConnFactory = SOAPConnectionFactory.newInstance();
@@ -75,6 +81,10 @@ public class ServiceDPD {
         }
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     public static void getServiceCostByParcels2() throws Exception {
         try {
             SOAPConnectionFactory soapConnFactory = SOAPConnectionFactory.newInstance();

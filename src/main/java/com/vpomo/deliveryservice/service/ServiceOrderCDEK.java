@@ -4,23 +4,51 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.exceptions.InvalidPdfException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
-import com.vpomo.deliveryservice.model.OrderCDEK;
 import org.apache.commons.codec.digest.DigestUtils;
-
 import java.io.*;
 import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.vpomo.deliveryservice.model.OrderCDEK;
 import static com.vpomo.deliveryservice.model.SettingsService.CDEK_ACCOUNT;
 import static com.vpomo.deliveryservice.model.SettingsService.CDEK_SECURE_PASSWORD;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Класс для отправки запросов к API компании СДЭК
+ * Данные отправляются в формате XML-пакетов
+ *
+ * Для отправки запроса на сервер используется подкласс HttpURLConnection
+ * Для печати квитанции в формате PDF используется библиотека iText
  */
-
 
 public class ServiceOrderCDEK {
 
+    /**
+     * Получение списка пунктов выдачи заказа
+     *
+     * @param cityId
+     * @return String
+     */
+    public String getPvzList(String cityId) {
+        String result = "error";
+        try {
+            result = postRequest("http://int.cdek.ru/pvzlist.php?cityid=" + cityId + "&type=ALL", "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * Создание нового заказа
+     *
+     * @param numberAkt
+     * @param orderCDEK
+     * @return String
+     */
     public String newOrder(String numberAkt, OrderCDEK orderCDEK) {
         String result = "error";
         try {
@@ -31,6 +59,13 @@ public class ServiceOrderCDEK {
         return result;
     }
 
+    /**
+     * Получение списка всех заказов за заданный промежуток времени
+     *
+     * @param dateBegin
+     * @param dateEnd
+     * @return String
+     */
     public String requestAllOrderInPeriod(String dateBegin, String dateEnd) {
         String result = "error";
         try {
@@ -41,6 +76,13 @@ public class ServiceOrderCDEK {
         return result;
     }
 
+    /**
+     * Удаление заказа
+     *
+     * @param numberAkt
+     * @param numberCDEK
+     * @return String
+     */
     public String deleteOrder(String numberAkt, String numberCDEK) {
         String result = "error";
         try {
@@ -51,6 +93,11 @@ public class ServiceOrderCDEK {
         return result;
     }
 
+    /**
+     *
+     * @param numberCDEK
+     * @return String
+     */
     public String statusOrderByNumberCDEK(String numberCDEK) {
         String result = "error";
         try {
@@ -61,6 +108,12 @@ public class ServiceOrderCDEK {
         return result;
     }
 
+    /**
+     *
+     * @param numberOrder
+     * @param dateOrder
+     * @return String
+     */
     public String statusOrderByNumberDate(String numberOrder, String dateOrder) {
         String result = "error";
         try {
@@ -71,7 +124,11 @@ public class ServiceOrderCDEK {
         return result;
     }
 
-
+    /**
+     * Печать созданного заказа
+     *
+     * @param numberCDEK
+     */
     public void printOrder(String numberCDEK) {
         String result = "error";
         BufferedReader reader;
@@ -82,6 +139,12 @@ public class ServiceOrderCDEK {
         }
     }
 
+    /**
+     * Формирование XML-пакета
+     *
+     * @param numberCDEK
+     * @return String
+     */
     public String printOrderXML(String numberCDEK) {
         StringBuilder XML = new StringBuilder();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -95,6 +158,14 @@ public class ServiceOrderCDEK {
         return XML.toString();
     }
 
+    /**
+     * Создание нового заказа
+     * Формирование XML-пакета
+     *
+     * @param numberAkt
+     * @param orderCDEK
+     * @return String
+     */
     public String newOrderXML(String numberAkt, OrderCDEK orderCDEK) {
         StringBuilder XML = new StringBuilder();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -159,6 +230,13 @@ public class ServiceOrderCDEK {
         return returnXML;
     }
 
+    /**
+     * Формирование XML-пакета
+     *
+     * @param dateBegin
+     * @param dateEnd
+     * @return String
+     */
     public String viewStatusAllOrderInPeriod(String dateBegin, String dateEnd) {
         StringBuilder XML = new StringBuilder();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -171,6 +249,13 @@ public class ServiceOrderCDEK {
         return XML.toString();
     }
 
+    /**
+     * Формирование XML-пакета
+     *
+     * @param numberAkt
+     * @param numberCDEK
+     * @return String
+     */
     public String deleteOrderXML(String numberAkt, String numberCDEK) {
         StringBuilder XML = new StringBuilder();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -184,6 +269,12 @@ public class ServiceOrderCDEK {
         return XML.toString();
     }
 
+    /**
+     * Формирование XML-пакета
+     *
+     * @param numberCDEK
+     * @return String
+     */
     public String statusOrderByNumberCDEKXML(String numberCDEK) {
         StringBuilder XML = new StringBuilder();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -197,6 +288,13 @@ public class ServiceOrderCDEK {
         return XML.toString();
     }
 
+    /**
+     * Формирование XML-пакета
+     *
+     * @param numberOrder
+     * @param dateOrder
+     * @return String
+     */
     public String statusOrderByNumberDateXML(String numberOrder, String dateOrder) {
         StringBuilder XML = new StringBuilder();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -210,11 +308,22 @@ public class ServiceOrderCDEK {
         return XML.toString();
     }
 
+    /**
+     * Шифрование строки
+     *
+     * @param dateExecute
+     * @return String
+     */
     public String getSecure(String dateExecute) {
         String secureString = DigestUtils.md5Hex(dateExecute + "&" + CDEK_SECURE_PASSWORD);
         return secureString;
     }
 
+    /**
+     * Шифрование строки
+     *
+     * @return String
+     */
     public String getSecure() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateExecute = dateFormat.format(new Date());
@@ -222,7 +331,15 @@ public class ServiceOrderCDEK {
         return secureString;
     }
 
-
+    /**
+     * Отправка запроса по указанному адресу и прием ответа от сервера
+     *
+     * @param address
+     * @param XML
+     * @return String
+     * @throws MalformedURLException
+     * @throws IOException
+     */
     public String postRequest(String address, String XML) throws MalformedURLException, IOException {
         String urlParameters = "xml_request=" + XML;
         URL url = new URL(address);
@@ -257,6 +374,15 @@ public class ServiceOrderCDEK {
         return resultResponse.toString();
     }
 
+    /**
+     * Отправка запроса по указанному адресу и прием ответа от сервера в виде файла PDF
+     * Сохранение принятого файла
+     *
+     * @param address
+     * @param XML
+     * @throws MalformedURLException
+     * @throws IOException
+     */
     public void getPDFRequest(String address, String XML) throws MalformedURLException, IOException {
         String urlParameters = "xml_request=" + XML;
         URL url = new URL(address);
@@ -298,6 +424,5 @@ public class ServiceOrderCDEK {
 
         writer.close();
         reader.close();
-        //return reader;
     }
 }

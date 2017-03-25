@@ -15,11 +15,25 @@ import javax.xml.transform.stream.StreamResult;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Класс для парсинга ответов от сервера DPD в формате XML-пакетов
+ *
+ * На вход методов класса подаются данные в формате XML
+ * На выходе получаем специально созданные инициализированные объекты,
+ * содержащие стркутурированные данные ответа
+ *
+ * Используется технология Java StAX API
+ * пакет javax.xml.stream
  */
 
 public class ReadCostDPD {
 
-
+    /**
+     *
+     * @param is
+     * @return List<CostDPD>
+     * @throws XMLStreamException
+     */
     public List<CostDPD> readFromXMLCostDPD(Source is) throws XMLStreamException {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         XMLStreamReader reader = null;
@@ -33,6 +47,12 @@ public class ReadCostDPD {
         }
     }
 
+    /**
+     *
+     * @param reader
+     * @return List<CostDPD>
+     * @throws XMLStreamException
+     */
     private List<CostDPD> readDocument(XMLStreamReader reader) throws XMLStreamException {
         while (reader.hasNext()) {
             int eventType = reader.next();
@@ -49,6 +69,12 @@ public class ReadCostDPD {
         throw new XMLStreamException("Premature end");
     }
 
+    /**
+     *
+     * @param reader
+     * @return List<CostDPD>
+     * @throws XMLStreamException
+     */
     private List<CostDPD> readAll(XMLStreamReader reader) throws XMLStreamException {
         List<CostDPD> costDPDs = new ArrayList<>();
 
@@ -67,10 +93,14 @@ public class ReadCostDPD {
         throw new XMLStreamException("Premature end");
     }
 
+    /**
+     *
+     * @param reader
+     * @return CostDPD
+     * @throws XMLStreamException
+     */
     private CostDPD readCostDPD(XMLStreamReader reader) throws XMLStreamException {
         CostDPD costDPD = new CostDPD("", "", "", 0);
-        //book.setLanguage(reader.getAttributeValue(null, "language"));
-
         while (reader.hasNext()) {
             int eventType = reader.next();
             switch (eventType) {
@@ -78,16 +108,12 @@ public class ReadCostDPD {
                     String elementName = reader.getLocalName();
                     if (elementName.equals("serviceCode"))
                         costDPD.setServiceCode(readCharacters(reader));
-                        //book.setAuthors(readAuthors(reader));
                     else if (elementName.equals("serviceName"))
                         costDPD.setServiceName(readCharacters(reader));
-                        //book.setTitle(readCharacters(reader));
                     else if (elementName.equals("cost"))
                         costDPD.setCost(readCharacters(reader));
-                        //book.setCategory(readCategory(reader));
                     else if (elementName.equals("days"))
                         costDPD.setDays(readInt(reader));
-                        //book.setYear(readInt(reader));
                     break;
                 case XMLStreamReader.END_ELEMENT:
                     return costDPD;
@@ -96,6 +122,12 @@ public class ReadCostDPD {
         throw new XMLStreamException("Premature end");
     }
 
+    /**
+     *
+     * @param reader
+     * @return String
+     * @throws XMLStreamException
+     */
     private String readCharacters(XMLStreamReader reader) throws XMLStreamException {
         StringBuilder result = new StringBuilder();
         while (reader.hasNext()) {
@@ -112,6 +144,12 @@ public class ReadCostDPD {
         throw new XMLStreamException("Premature end");
     }
 
+    /**
+     *
+     * @param reader
+     * @return int
+     * @throws XMLStreamException
+     */
     private int readInt(XMLStreamReader reader) throws XMLStreamException {
         String characters = readCharacters(reader);
         try {

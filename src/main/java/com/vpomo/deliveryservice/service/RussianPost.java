@@ -12,10 +12,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
 /**
- * @author Pomogalov V.A.
- */
-
-/**
  * Данный код создает запросы getTicket.Метод getTicket используется
  * для получения билета на подготовку информации по списку идентификаторов
  * отправлений. В запросе передается список идентификаторов отправлений.

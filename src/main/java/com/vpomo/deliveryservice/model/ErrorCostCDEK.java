@@ -2,6 +2,8 @@ package com.vpomo.deliveryservice.model;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Объект для чтения ошибки от сервера при расчете стоимости доставки
  */
 
 

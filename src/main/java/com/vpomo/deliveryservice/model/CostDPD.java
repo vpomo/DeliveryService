@@ -5,6 +5,8 @@ import java.io.Serializable;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Объект для отправки данных на сервер ДПД для расчета стоимости доставки
  */
 
 

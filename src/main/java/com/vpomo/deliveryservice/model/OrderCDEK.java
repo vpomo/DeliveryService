@@ -2,6 +2,8 @@ package com.vpomo.deliveryservice.model;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Объект для создания нового заказа
  */
 
 public class OrderCDEK {

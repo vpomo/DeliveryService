@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Вспомогательный объект для чтения ответа от сервера СДЭК
+ * при выводе всех существующих заказов
  */
 
 public class ResponseAllOrderCDEK {

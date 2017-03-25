@@ -2,6 +2,9 @@ package com.vpomo.deliveryservice.model;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Вспомогательный объект для формирования дополнительных сервисов
+ * Используется при формировании нового заказа на доставку в компании СДЭК
  */
 
 public class AddedServiceInOrderCDEK {

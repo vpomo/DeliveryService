@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Объект для отправки данных на сервер СДЭК для расчета стоимости доставки
  */
 
 //@JsonIgnoreProperties(ignoreUnknown = true)

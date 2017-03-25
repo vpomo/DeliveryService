@@ -7,44 +7,81 @@ import java.util.ArrayList;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Проверка разработанного функционала для работы с API компании СДЭК
  */
 
 public class MainDelivery {
     public static void main(String args[]) throws Exception {
-        String dateExecute = "2016-10-20";
+        // Дата отправки запросов
+        String dateExecute = "2017-03-12";
+        // Код города Благовещенска
         String senderCityId = "286";
+        // Код города Нижний Новгород
         String receiverCityId = "414";
 
-
+        // Проверка расчета стоимости доставки товара
         ServiceCalcCDEK serviceCalcCDEK = new ServiceCalcCDEK();
         ArrayList<GoodsShipment> listGoodsShipment = new ArrayList<>();
 
-        //GoodsShipment (double weight, int length, int width, int height, double volume)
-        GoodsShipment goodsShipment1 = new GoodsShipment(2.37, 33, 30, 13, 0.0);
-        listGoodsShipment.add(goodsShipment1);
-       // GoodsShipment goodsShipment2 = new GoodsShipment(0.1, 0, 0, 0, 0.1);
-       // listGoodsShipment.add(goodsShipment2);
-       // GoodsShipment goodsShipment3 = new GoodsShipment(0.3, 10, 7, 5, 0.0);
-       // listGoodsShipment.add(goodsShipment3);
+        System.out.println("\n" + "We start calculating the cost of delivery ...");
 
+        /**
+         * Формируем содержимое посылки
+         * Заполняем вспомогательные объекты для описания содержимого посылки
+         * GoodsShipment (double weight, int length, int width, int height, double volume)
+         */
+        System.out.println("Form the contents of the parcel");
+        GoodsShipment goodsShipment1 = new GoodsShipment(2.00, 34, 27, 19, 0.0);
+        listGoodsShipment.add(goodsShipment1);
+        GoodsShipment goodsShipment2 = new GoodsShipment(0.1, 0, 0, 0, 0.1);
+        listGoodsShipment.add(goodsShipment2);
+        GoodsShipment goodsShipment3 = new GoodsShipment(0.3, 10, 7, 5, 0.0);
+        listGoodsShipment.add(goodsShipment3);
+
+        // Отправляем запрос на сервер
+        System.out.println("\n" + "Transfer data to the server CDEK for calculation ...");
         if (ServiceCalcCDEK.checkDataGoods(listGoodsShipment)) {
             ResponseCostCDEK calculateDelivery = ServiceCalcCDEK.calculateDelivery(dateExecute, senderCityId, receiverCityId, listGoodsShipment);
-            System.out.println("\n" + "Query result:");
+            System.out.println("\n" + "Answer from the CDEC server:");
             if (calculateDelivery.getResult().getTextError() != null) {
                 System.out.println("Error accessing API: " + calculateDelivery.getResult().getTextError());
             } else {
                 System.out.println("price=" + calculateDelivery.getResult().getPrice());
-                System.out.println("deliveryPeriodMax=" + calculateDelivery.getResult().getDeliveryPeriodMax());
-                System.out.println("cashOnDelivery=" + calculateDelivery.getResult().getCashOnDelivery());
+                System.out.println("deliveryPeriodMin=" + calculateDelivery.getResult().getDeliveryPeriodMin() +
+                                    " deliveryPeriodMax=" + calculateDelivery.getResult().getDeliveryPeriodMax());
             }
         } else {
             System.out.println("Goods parameters entered incorrectly");
         }
 
+        //Подготавливаем объекты для работы с API СДЭК
         ServiceOrderCDEK serviceOrderCDEK = new ServiceOrderCDEK();
         ParseAnswerCDEK parseAnswerCDEK = new ParseAnswerCDEK();
         String resultRequest = "";
-/*
+        
+        //Считываем список ПВЗ
+        System.out.println("\n" + "Read the list of the PVZ ...");
+        System.out.println("Transfer data to the server CDEK for get list PVZ");
+        resultRequest = serviceOrderCDEK.getPvzList("44");
+        System.out.println("Get the answer in XML format:");
+        System.out.println("resultRequest=" + resultRequest);
+        ArrayList<ResponsePvzCDEK> pvzCDEKList = new ArrayList<>();
+        pvzCDEKList = parseAnswerCDEK.readFromXMLPvzList(resultRequest);
+        System.out.println("\n" + "List of PVZ in city Moscow:");
+
+        if (pvzCDEKList.size()>0){
+            int i = 0;
+            for (ResponsePvzCDEK currentPvz:pvzCDEKList){
+                i++;
+                System.out.println(i + ": code=" + currentPvz.getCodePvz()+ " name=" + currentPvz.getNamePvz());
+            }
+        }
+        System.out.println("End of the list PVZ");
+        //Окончание вывода ПВЗ
+
+        //Пример XML-пакета для создания заказа
+        /*
         "  <Order " +
                 " Number=\"ORD1234571\"" +
                 " RecCityCode=\"94\"" +
@@ -85,7 +122,9 @@ public class MainDelivery {
                 "  </Order>\n" +
 
                 OrderCDEK orderCDEK = new OrderCDEK(String numberOrder, );
-*/
+            */
+
+
         OrderCDEK orderCDEK = new OrderCDEK(
                 "u-fun-2016-11-11-001", // Номер заказа Интернет-магазина
                 286, 414, // 286 - код Благовещенска , 414 - код г. Нижний Новгород
@@ -109,7 +148,7 @@ public class MainDelivery {
         String newOrderUFUN = "U-FUN-20161114-002";
 
         ResponseAddOrderCDEK addOrderCDEK;
-        System.out.println("Make new order ...");
+        System.out.println("\n" + "Make new order ...");
         resultRequest = serviceOrderCDEK.newOrder(newOrderUFUN, orderCDEK);
         System.out.println("resultRequest=" + resultRequest);
 
@@ -117,8 +156,7 @@ public class MainDelivery {
         addOrderCDEK = parseAnswerCDEK.readFromXMLAddOrderCDEK(resultRequest);
         if (addOrderCDEK.getErrorCode() == null) {
             System.out.println("Успешно создан новый заказ.\n" +
-                    "Номер заказа Интернет-магазина: " + addOrderCDEK.getNumberOrder() +
-                    ", Номер заказа в системе СДЭК: " + addOrderCDEK.getDispatchNumberOrder());
+                    "Номер заказа в системе СДЭК: " + addOrderCDEK.getDispatchNumberOrder());
             newOrderNumberCDEK = addOrderCDEK.getDispatchNumberOrder();
         } else {
             System.out.println("Ошибка при создании нового заказа: " + addOrderCDEK.getErrorCode() +
@@ -126,8 +164,8 @@ public class MainDelivery {
         }
 
         //View status all order's in period
-        System.out.println("\n\n View status all order's in period: from 2010-07-16 to 2016-12-19 \n\n");
-        resultRequest = serviceOrderCDEK.requestAllOrderInPeriod("2016-01-01", "2016-12-19");
+        System.out.println("\n\n View status all order's in period: from 2010-07-16 to 2019-12-19 \n\n");
+        resultRequest = serviceOrderCDEK.requestAllOrderInPeriod("2017-01-01", "2019-12-19");
         ArrayList<ResponseAllOrderCDEK> allOrderCDEK;
 
         allOrderCDEK = parseAnswerCDEK.readFromXMLAllOrderCDEK(resultRequest);
@@ -162,8 +200,15 @@ public class MainDelivery {
         if (delOrderCDEK.getErrorCode() != null) {
             System.out.println("Ошибка при удалении заказа: " + delOrderCDEK.getErrorCode() + "\n\n");
         } else {
-            System.out.println("Успешная операция с базой СДЭК. " + delOrderCDEK.getMessageFromService() + "\n\n");
+            System.out.println("Успешная операция с базой СДЭК. " + "\n\n");
         }
+
+        /*
+        ReadCityCDEK readCityCDEK = new ReadCityCDEK();
+        ArrayList<CityCDEK> listCity = new ArrayList<>();
+        listCity = readCityCDEK.readCityFromFile();
+        System.out.println(listCity);
+        */
 
     }
 }

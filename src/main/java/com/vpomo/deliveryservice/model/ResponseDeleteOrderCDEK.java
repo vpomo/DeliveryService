@@ -2,6 +2,9 @@ package com.vpomo.deliveryservice.model;
 
 /**
  * @author Pomogalov V.A.
+ *
+ * Вспомогательный объект для чтения ответа от сервера СДЭК
+ * при удалении заказа
  */
 
 public class ResponseDeleteOrderCDEK {
